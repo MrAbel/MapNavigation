@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--Toolbar-->
+    <include layout="@layout/toolbar" />
+
+    <!--DrawerLayout-->
+    <com.example.mapnavigation.ui.customview.MaterialDrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--FragmentContent-->
+        <FrameLayout
+            android:id="@+id/fragment_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                layout="@layout/activity_content_main" />
+        </FrameLayout>
+        <!--ListView-->
+        <include layout="@layout/listview_drawer" />
+
+    </com.example.mapnavigation.ui.customview.MaterialDrawerLayout>
+</LinearLayout>
+
+
