@@ -2,10 +2,17 @@
     <string name="app_name">MapNavigation</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
+
+    <!--hint-->
+    <string name="hint_search">请输入查询关键字（公交、地点）</string>
+    <!--hint-->
+
+    <!--array-->
     <string-array name="drawer_menu">
         <item>Menu 1</item>
         <item>Menu 2</item>
         <item>Menu 3</item>
         <item>Menu 4</item>
     </string-array>
+    <!--array-->
 </resources>

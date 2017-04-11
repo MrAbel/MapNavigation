@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <!--Toolbar-->
-    <include layout="@layout/toolbar" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <!--DrawerLayout-->
     <com.example.mapnavigation.ui.customview.MaterialDrawerLayout
@@ -13,15 +15,9 @@
         android:layout_height="match_parent">
 
         <!--FragmentContent-->
-        <FrameLayout
-            android:id="@+id/fragment_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <include
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                layout="@layout/activity_content_main" />
-        </FrameLayout>
+        <include
+            android:id="@+id/fragment_content_main"
+            layout="@layout/framelayout" />
         <!--ListView-->
         <include layout="@layout/listview_drawer" />
 

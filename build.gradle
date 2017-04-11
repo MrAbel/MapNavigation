@@ -12,6 +12,8 @@ buildscript {
 
         // Better IDE support for annotations (so Android Studio interacts better with Dagger)
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+
+
     }
 }
 

@@ -12,6 +12,8 @@ public interface MainContract {
 
     public interface View extends BaseView<Presenter>{
 
+        public void showCurLocation();
+
     }
 
     public interface Presenter extends BasePresenter{
