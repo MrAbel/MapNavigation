@@ -16,7 +16,7 @@
 
         <!--FragmentContent-->
         <include
-            android:id="@+id/fragment_content_main"
+            android:id="@+id/fragment_content"
             layout="@layout/framelayout" />
         <!--ListView-->
         <include layout="@layout/listview_drawer" />

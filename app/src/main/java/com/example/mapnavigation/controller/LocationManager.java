@@ -20,6 +20,7 @@ import com.amap.api.maps.model.MyLocationStyle;
 import com.example.mapnavigation.MapApplication;
 import com.example.mapnavigation.R;
 import com.example.mapnavigation.data.db.LocationPoint;
+import com.example.mapnavigation.utils.ToastUtils;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -71,12 +72,18 @@ public class LocationManager implements  AMapLocationListener{
         //　设置定位模式为AMapLocationMode.Hight_Accuracy，高精度模式。
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         //　获取一次定位结果，该方法默认为false。
-        mLocationOption.setOnceLocation(true);
-        //mLocationOption.setNeedAddress(true);
+        mLocationOption.setOnceLocation(false);
+        // 设置是否允许模拟位置, 默认为false
+        mLocationOption.setMockEnable(false);
+        // 设置是否返回地址信息（默认返回地址信息）
+        mLocationOption.setNeedAddress(true);
+        // 设置发起定位的时间间隔
+        mLocationOption.setInterval(10000);
+
         //　获取最近3s内精度最高的一次定位结果：
         //　设置setOnceLocationLatest(boolean b)接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果
         //　如果设置其为true，setOnceLocation(boolean b)接口也会被设置为true，反之不会，默认为false。
-        mLocationOption.setOnceLocationLatest(true);
+        //mLocationOption.setOnceLocationLatest(true);
         // -------------------初始化定位参数----------------
         //给定位客户端对象设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
@@ -109,13 +116,11 @@ public class LocationManager implements  AMapLocationListener{
 
         // 自定义系统定位蓝点
         MyLocationStyle myLocationStyle = new MyLocationStyle();
-
         // 连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);
-
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);
         // 自定义定位蓝点图标
-        myLocationStyle.myLocationIcon(BitmapDescriptorFactory.
-                fromResource(R.drawable.gps_point));
+        //myLocationStyle.myLocationIcon(BitmapDescriptorFactory.
+          //      fromResource(R.drawable.gps_point));
         // 自定义精度范围的圆形边框颜色
         myLocationStyle.strokeColor(STROKE_COLOR);
         // 自定义精度范围的圆形边框宽度
@@ -132,6 +137,8 @@ public class LocationManager implements  AMapLocationListener{
      */
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
+
+        ToastUtils.showShort("定位");
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
 
@@ -150,6 +157,8 @@ public class LocationManager implements  AMapLocationListener{
                         + aMapLocation.getErrorInfo());
             }
         }
+
+
 
         //获取定位时间
 //        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

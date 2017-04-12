@@ -21,7 +21,7 @@
             android:paddingTop="5dp"
             android:paddingRight="5dp"
             android:paddingBottom="5dp"
-            android:drawableLeft="@drawable/ic_toolbar_search"
+            android:drawableLeft="@mipmap/ic_toolbar_nearby"
             android:background="@color/white">
         </Button>
         <Button
@@ -37,7 +37,7 @@
             android:paddingTop="5dp"
             android:paddingRight="5dp"
             android:paddingBottom="5dp"
-            android:drawableLeft="@drawable/ic_toolbar_search"
+            android:drawableLeft="@mipmap/ic_toolbar_search"
             android:background="@color/white">
         </Button>
 
@@ -54,7 +54,7 @@
             android:paddingTop="5dp"
             android:paddingRight="5dp"
             android:paddingBottom="5dp"
-            android:drawableLeft="@drawable/ic_toolbar_search"
+            android:drawableLeft="@mipmap/ic_toolbar_nav"
             android:background="@color/white">
         </Button>
 

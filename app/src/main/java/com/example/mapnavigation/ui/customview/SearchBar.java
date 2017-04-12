@@ -73,33 +73,6 @@ public class SearchBar extends AutoCompleteTextView {
         }
         return super.onTouchEvent(event);
     }
-/*
-    @Override
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        String newText = text.toString().trim();
-        InputtipsQuery inputquery = new InputtipsQuery(newText, "长沙");
-        Inputtips inputTips = new Inputtips(mContext, inputquery);
-        inputTips.setInputtipsListener(new Inputtips.InputtipsListener() {
-            @Override
-            public void onGetInputtips(List<Tip> list, int i) {
-                if (i == AMapException.CODE_AMAP_SUCCESS) {// 正确返回
-                    List<String> listString = new ArrayList<String>();
-                    for (int j = 0; j < list.size(); j++) {
-                        listString.add(list.get(j).getName());
-                    }
-                    ArrayAdapter<String> aAdapter = new ArrayAdapter<String>(
-                            MapApplication.getContext(),
-                            R.layout.drawer_list_item, listString);
-                    mSearchBar.setAdapter(aAdapter);
-                    aAdapter.notifyDataSetChanged();
-                } else {
-
-                }
-            }
-        });
-        inputTips.requestInputtipsAsyn();
-    }
-    */
 }
 
 /*

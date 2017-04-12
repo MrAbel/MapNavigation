@@ -13,4 +13,6 @@ public class Constants {
     public static final int AMAP_REGEOCODE_RADIUS = 200;
     // 地图初始缩放比例
     public static final float AMAP_INIT_ZOOM_VALUE = 18;
+    // 地图显示行政区边界时的缩放比例
+    public static final float AMAP_DISTRICT_ZOOM_VALUE = 8;
 }

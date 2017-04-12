@@ -1,13 +1,13 @@
-package com.example.mapnavigation.ui.main;
+package com.example.mapnavigation.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import com.amap.api.maps.MapView;
 import com.example.mapnavigation.R;
 import com.example.mapnavigation.base.BaseActivity;
 import com.example.mapnavigation.ui.customview.MaterialDrawerLayout;
+import com.example.mapnavigation.ui.map.MapFragment;
+import com.example.mapnavigation.ui.map.MapPresenter;
 import com.example.mapnavigation.utils.ActivityUtils;
 
 public class MainActivity extends BaseActivity {
@@ -35,19 +35,19 @@ public class MainActivity extends BaseActivity {
         mDrawerLayout.bindToolbar(mToolbar);
 
         // 获得Fragment
-        MainFragment mainFragment = (MainFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_content_main);
+        MapFragment mapFragment = (MapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_content);
 
         // 如果获得Fragment不为空就将其添加到Activity中
-        if (mainFragment == null) {
-            mainFragment = mainFragment.newInstance();
+        if (mapFragment == null) {
+            mapFragment = mapFragment.newInstance();
 
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    mainFragment, R.id.fragment_content_main);
+                    mapFragment, R.id.fragment_content);
         }
 
         // Create the presenter
-        new MainPresenter(mainFragment);
+        new MapPresenter(mapFragment);
     }
 
     /**

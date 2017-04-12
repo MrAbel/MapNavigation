@@ -16,11 +16,18 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.Poi;
+import com.amap.api.maps.model.PolylineOptions;
+import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.district.DistrictItem;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.example.mapnavigation.MapApplication;
 import com.example.mapnavigation.R;
 import com.example.mapnavigation.utils.ToastUtils;
 
+import java.util.ArrayList;
+
+import static com.example.mapnavigation.utils.Constants.AMAP_DISTRICT_ZOOM_VALUE;
 import static com.example.mapnavigation.utils.Constants.AMAP_INIT_ZOOM_VALUE;
 import static com.example.mapnavigation.utils.Constants.AMAP_REGEOCODE_RADIUS;
 
@@ -40,10 +47,12 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
     private UiSettings mUiSettings;
     // 地图搜索组件
     private QueryerManager mQueryerManager;
-    // 标识搜索到的Marker
-    private Marker mQueryMarker;
     // 标识当前点击的pPoi
     private Poi mPoi;
+    // 标识搜索到的Marker
+    private Marker mQueryMarker;
+    // 标识定位的图标(当前位置)
+    //private Marker mLocationMarker;
 
     // ---------------构造函数-----------------------
     public AMapManager(Context context, AMap aMap){
@@ -70,6 +79,12 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
      * 初始化地图控件的显示
      */
     private void initAMapUI(){
+//
+//        // 初始化定位图标
+//        MarkerOptions options = new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location))
+//                .title("当前位置");
+//        mLocationMarker = mAMap.addMarker(options);
 
         // 设置初始缩放比例
         mAMap.animateCamera(CameraUpdateFactory.zoomTo(AMAP_INIT_ZOOM_VALUE));
@@ -97,6 +112,11 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
         mAMap.setOnMarkerClickListener(this);
         // 为地图的查询组件设置回调
         mQueryerManager.setmOnAMapQueryListener(this);
+    }
+
+    // --------------------外部函数接口----------------------------
+    public void searchDistrict(String keyword){
+        mQueryerManager.searchDistrictBoundary(keyword);
     }
 
     /**
@@ -192,5 +212,66 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
 //                    mCurrentMarker.getPosition(),
 //                    AMapStatus.onRegeocodeSearched);
 //        }
+    }
+
+    @Override
+    public void onDistrictSearched(ArrayList<DistrictItem> districtItems) {
+
+        if (districtItems == null){
+            return;
+        }
+
+        // 获取第一个返回的DistrictItem
+        final DistrictItem item = districtItems.get(0);
+
+        if (item == null) {
+            ToastUtils.showShort("没有找到相应的行政区");
+            return;
+        }
+
+        // 获得该行政区中心的坐标
+        LatLonPoint centerLatLng = item.getCenter();
+
+        if (centerLatLng != null) {
+            // 行政区中心移到地图中心，并设置缩放比例
+            mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(centerLatLng.getLatitude(), centerLatLng.getLongitude()),
+                    AMAP_DISTRICT_ZOOM_VALUE));
+        }
+
+        new Thread() {
+            public void run() {
+
+                String[] polyStr = item.districtBoundary();
+                if (polyStr == null || polyStr.length == 0) {
+                    return;
+                }
+                for (String str : polyStr) {
+                    String[] lat = str.split(";");
+                    PolylineOptions polylineOption = new PolylineOptions();
+                    boolean isFirst = true;
+                    LatLng firstLatLng = null;
+                    for (String latstr : lat) {
+                        String[] lats = latstr.split(",");
+                        if (isFirst) {
+                            isFirst = false;
+                            firstLatLng = new LatLng(Double
+                                    .parseDouble(lats[1]), Double
+                                    .parseDouble(lats[0]));
+                        }
+                        polylineOption.add(new LatLng(Double
+                                .parseDouble(lats[1]), Double
+                                .parseDouble(lats[0])));
+                    }
+                    if (firstLatLng != null) {
+                        polylineOption.add(firstLatLng);
+                    }
+
+                    polylineOption.width(10).color(Color.BLUE);
+                    mAMap.addPolyline(polylineOption);
+                }
+            }
+        }.start();
+
     }
 }

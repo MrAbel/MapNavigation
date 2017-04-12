@@ -1,18 +1,18 @@
-package com.example.mapnavigation.ui.main;
+package com.example.mapnavigation.ui.map;
 
 import android.support.annotation.NonNull;
-import android.support.test.espresso.core.deps.guava.base.Strings;
+
 import static dagger.internal.Preconditions.checkNotNull;
 
 /**
  * Created by zzg on 17-4-5.
  */
 
-public class MainPresenter implements MainContract.Presenter {
+public class MapPresenter implements MapContract.Presenter {
 
-    private MainContract.View mMainView;
+    private MapContract.View mMainView;
 
-    public MainPresenter(@NonNull MainContract.View mainView) {
+    public MapPresenter(@NonNull MapContract.View mainView) {
         mMainView = checkNotNull(mainView, "mainView cannot be null!");
         mMainView.setPresenter(this);
     }

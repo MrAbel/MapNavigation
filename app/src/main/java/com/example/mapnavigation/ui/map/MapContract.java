@@ -1,4 +1,4 @@
-package com.example.mapnavigation.ui.main;
+package com.example.mapnavigation.ui.map;
 
 import com.example.mapnavigation.base.BasePresenter;
 import com.example.mapnavigation.base.BaseView;
@@ -8,7 +8,7 @@ import com.example.mapnavigation.base.BaseView;
  * Created by zzg on 17-4-3.
  */
 
-public interface MainContract {
+public interface MapContract {
 
     public interface View extends BaseView<Presenter>{
 
