@@ -22,7 +22,13 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.amap.api.services.route.BusRouteResult;
 import com.amap.api.services.route.District;
+import com.amap.api.services.route.DriveRouteResult;
+import com.amap.api.services.route.RideRouteResult;
+import com.amap.api.services.route.RouteSearch;
+import com.amap.api.services.route.WalkRouteResult;
+import com.example.mapnavigation.utils.Constants;
 import com.example.mapnavigation.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -31,12 +37,13 @@ import static android.content.ContentValues.TAG;
 import static com.example.mapnavigation.utils.Constants.AMAP_SEARCH_SUCCESS_CODE;
 
 /**
- * 高德地图的搜索组件,封装高德地图的搜索服务包括地理编码查询、逆地理编码查询、行政区查询等
+ * 高德地图的搜索组件,封装高德地图的搜索服务包括地理编码查询、逆地理编码查询、行政区查询、路线查询等
  * Created by zzg on 17-4-10.
  */
 
 public class QueryerManager implements GeocodeSearch.OnGeocodeSearchListener,
-        DistrictSearch.OnDistrictSearchListener, PoiSearch.OnPoiSearchListener {
+        DistrictSearch.OnDistrictSearchListener, PoiSearch.OnPoiSearchListener,
+        RouteSearch.OnRouteSearchListener{
 
     // ----------------fields----------------
     private Context mContext;
@@ -107,6 +114,24 @@ public class QueryerManager implements GeocodeSearch.OnGeocodeSearchListener,
         poiSearch.setOnPoiSearchListener(this);
         // 异步查询
         poiSearch.searchPOIAsyn();
+    }
+
+    public void searchRoute(int method){
+
+        RouteSearch.FromAndTo fromAndTo = null;
+        // 创建路线查询类
+        RouteSearch routeSearch = new RouteSearch(mContext);
+        // 为路线查询设置监听器
+        routeSearch.setRouteSearchListener(this);
+        // 根据选择设置搜索参数，并且发起查询
+        switch (method){
+            case Constants.WALK_ROUTE:
+                RouteSearch.WalkRouteQuery query = new RouteSearch.WalkRouteQuery(fromAndTo);
+                routeSearch.calculateWalkRouteAsyn(query);
+                break;
+            case Constants.BUS_ROUTE:
+                break;
+        }
     }
 
     // --------------GeocodeSearch.OnGeocodeSearchListener-------------
@@ -192,6 +217,41 @@ public class QueryerManager implements GeocodeSearch.OnGeocodeSearchListener,
     public void onPoiItemSearched(PoiItem poiItem, int i) {
 
     }
+    // --------------RouteSearch.OnRouteSearchListener-------------
+    @Override
+    public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int i) {
+        if (i == Constants.AMAP_SEARCH_SUCCESS_CODE){
+            if (walkRouteResult != null && walkRouteResult.getPaths() != null) {
+                if (walkRouteResult.getPaths().size() > 0) {
+                    // 通过回调处理结果
+                    if (mOnAMapQueryListener != null) {
+                        mOnAMapQueryListener.onWalkRouteSearched(walkRouteResult);
+                    }
+                } else if (walkRouteResult != null
+                        && walkRouteResult.getPaths() == null) {
+                    ToastUtils.showShort("没有找到路线");
+                }
+            } else {
+                ToastUtils.showShort("没有找到路线");
+            }
+        }
+
+    }
+
+    @Override
+    public void onRideRouteSearched(RideRouteResult rideRouteResult, int i) {
+
+    }
 
     // -------------------------外部访问接口----------------------
     /**
@@ -202,6 +262,8 @@ public class QueryerManager implements GeocodeSearch.OnGeocodeSearchListener,
         void onRegeocodeSearched(RegeocodeAddress address);
         //　行政区划搜索结果处理回调
         void onDistrictSearched(ArrayList<DistrictItem> districtItems);
+        // 步行规划搜索结果回调
+        void onWalkRouteSearched(WalkRouteResult walkRouteResult);
     }
 
     // ----------------------setter and getter-----------------------

@@ -14,5 +14,10 @@
         <item>Menu 3</item>
         <item>Menu 4</item>
     </string-array>
+    <array name="nav_method">
+        <item>公交</item>
+        <item>驾车</item>
+        <item>步行</item>
+    </array>
     <!--array-->
 </resources>

@@ -27,6 +27,7 @@ import com.example.mapnavigation.R;
 import com.example.mapnavigation.base.BaseFragment;
 import com.example.mapnavigation.controller.AMapManager;
 import com.example.mapnavigation.controller.LocationManager;
+import com.example.mapnavigation.ui.ContentPage;
 import com.example.mapnavigation.ui.customview.SearchBar;
 import com.example.mapnavigation.ui.nav.NavFragment;
 import com.example.mapnavigation.utils.ActivityUtils;
@@ -43,13 +44,11 @@ import static dagger.internal.Preconditions.checkNotNull;
  */
 
 public class MapFragment extends BaseFragment implements  MapContract.View, View.OnClickListener,
-        View.OnKeyListener, TextWatcher {
+        View.OnKeyListener, TextWatcher{
 
     private static final String ARGUMENT_TASK_ID = "TASK_ID";
 
     // ----------------fields----------------
-    // 所处的Activity的上下文环境
-    private Context mContext;
     // view相对应的presenter
     private MapContract.Presenter mPresenter;
     // 定位服务类(此类提供单次定位、持续定位、最后位置相关功能)
@@ -74,65 +73,26 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
     public Button mNavBtn;
 
 
-
-    // --------------------------碎片生命周期---------------------------
-    @Nullable
+    // -------------BaseFragment-----------------
+    /**
+     * 获取加载成功的Ｖiew
+     * @return
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View getLoadedView() {
         // 动态加载布局文件
-        mView = inflater.inflate(R.layout.fragment_content_map, container, false);
-
-        // 获取控件的应用
-        initView();
-        // 创建地图
-        mMapView.onCreate(savedInstanceState);
-        // 获得地图控制
-        mAMap = mMapView.getMap();
-        // 获得上下问环境
-        mContext = getActivity();
-        // 获取定位管理类
-        mLocationManager = new LocationManager(mAMap);
-        // 获取地图管理类
-        mAMapManager = new AMapManager(mContext, mAMap);
-        //mLocateBtn.setVisibility(View.GONE);
+        mView = View.inflate(mContext, R.layout.fragment_content_map, null);
+        // 初始化该View
+        init();
         return mView;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mLocationManager.startLocation();
+    public Object getData() {
+
+        return ContentPage.PageState.STATE_LOADED;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mLocationManager.stopLocation();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
-        mMapView.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
-        mMapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
-        //unbinder.unbind();
-        mMapView.onDestroy();
-
-    }
 
     // ------------------普通函数--------------------------
 
@@ -146,13 +106,29 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
     }
 
     /**
+     * 为该View做些初始化工作
+     */
+    private void init(){
+        // 获取控件的应用
+        initView();
+        // 创建地图
+        mMapView.onCreate(mSavedInstanceState);
+        // 获得地图控制
+        mAMap = mMapView.getMap();
+        // 获取定位管理类
+        mLocationManager = new LocationManager(mAMap);
+        // 获取地图管理类
+        mAMapManager = new AMapManager(mContext, mAMap);
+    }
+
+    /**
      * 初始化视图控件
      */
     private void initView(){
         mMapView = (MapView) mView.findViewById(R.id.mapView);
         mSearchBar = (SearchBar)mView.findViewById(R.id.searchbar);
         mLocateBtn = (ImageView)mView.findViewById(R.id.imageView_locate_btn);
-        mNavBtn = (Button)mView.findViewById(R.id.button_navigate);
+        //    mNavBtn = (Button)mView.findViewById(R.id.button_navigate);
         regiesterListener();
     }
 
@@ -162,14 +138,14 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
     public void regiesterListener(){
         mLocateBtn.setOnClickListener(this);
         mSearchBar.setOnKeyListener(this);
-        mNavBtn.setOnClickListener(this);
+        //mNavBtn.setOnClickListener(this);
         mSearchBar.addTextChangedListener(this);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
+        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState()，保存地图当前的状态
         mMapView.onSaveInstanceState(outState);
     }
 
@@ -182,21 +158,21 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
                 //mLocationManager.locate();
                 //showCurLocation();
                 break;
-            case R.id.button_navigate:
-                ToastUtils.showShort("click nav");
-                // 获得Fragment
-                NavFragment navFragment = (NavFragment) getActivity().getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_content);
-
-                // 如果获得Fragment不为空就将其添加到Activity中
-                if (navFragment == null) {
-                    navFragment = navFragment.newInstance();
-
-                    ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
-                            navFragment, R.id.fragment_content);
-                }
-
-                break;
+//            case R.id.button_navigate:
+//                ToastUtils.showShort("click nav");
+//                // 获得Fragment
+////                NavFragment navFragment = (NavFragment) getActivity().getSupportFragmentManager()
+////                        .findFragmentById(R.id.fragment_content);
+//
+////                // 如果获得Fragment不为空就将其添加到Activity中
+////                if (navFragment == null) {
+////                    navFragment = navFragment.newInstance();
+////
+////                    ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
+////                            navFragment, R.id.fragment_content);
+//               // }
+//
+//                break;
             default:
                 break;
         }
@@ -280,5 +256,45 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
     public void afterTextChanged(Editable s) {
 
     }
+
+    // --------------------------碎片生命周期---------------------------
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //mLocateBtn.setVisibility(View.GONE);
+        mLocationManager.startLocation();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mLocationManager.stopLocation();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
+        mMapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
+        //unbinder.unbind();
+        mMapView.onDestroy();
+
+    }
+
+
 
 }

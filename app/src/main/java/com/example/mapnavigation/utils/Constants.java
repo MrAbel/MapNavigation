@@ -15,4 +15,19 @@ public class Constants {
     public static final float AMAP_INIT_ZOOM_VALUE = 18;
     // 地图显示行政区边界时的缩放比例
     public static final float AMAP_DISTRICT_ZOOM_VALUE = 8;
+
+    // ---------------------------------------
+    public static final int Pager_NearBy = 0;
+    public static final int Pager_Map = 1;
+    public static final int Pager_Nav = 2;
+    public static final int Pager_ALL = 3;
+
+    // ----------------------------------------
+    public static final int WALK_ROUTE = 0;
+    public static final int BUS_ROUTE = 1;
+    public static final int BIKE_ROUTE = 2;
+
+
+
+
 }

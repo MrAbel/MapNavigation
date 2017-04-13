@@ -36,8 +36,5 @@
 
     <!-- 图层按钮 -->
 
-    <!-- 工具栏 -->
-    <include
-        layout="@layout/bar_tool_main" />
 
 </RelativeLayout>

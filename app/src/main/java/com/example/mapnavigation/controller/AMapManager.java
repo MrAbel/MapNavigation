@@ -1,9 +1,11 @@
 package com.example.mapnavigation.controller;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +23,11 @@ import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.district.DistrictItem;
 import com.amap.api.services.geocoder.RegeocodeAddress;
+import com.amap.api.services.route.WalkPath;
+import com.amap.api.services.route.WalkRouteResult;
 import com.example.mapnavigation.MapApplication;
 import com.example.mapnavigation.R;
+import com.example.mapnavigation.ui.overlay.WalkRouteOverlay;
 import com.example.mapnavigation.utils.ToastUtils;
 
 import java.util.ArrayList;
@@ -272,6 +277,41 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
                 }
             }
         }.start();
+
+    }
+
+    @Override
+    public void onWalkRouteSearched(WalkRouteResult walkRouteResult) {
+        if (walkRouteResult == null){
+            return;
+        }
+
+        final WalkPath walkPath = walkRouteResult.getPaths()
+                .get(0);
+        WalkRouteOverlay walkRouteOverlay = new WalkRouteOverlay(
+                mContext, mAMap, walkPath,
+                walkRouteResult.getStartPos(),
+                walkRouteResult.getTargetPos());
+        walkRouteOverlay.removeFromMap();
+        walkRouteOverlay.addToMap();
+        walkRouteOverlay.zoomToSpan();
+        //mBottomLayout.setVisibility(View.VISIBLE);
+        int dis = (int) walkPath.getDistance();
+        int dur = (int) walkPath.getDuration();
+        //String des = AMapUtil.getFriendlyTime(dur)+"("+AMapUtil.getFriendlyLength(dis)+")";
+        //mRotueTimeDes.setText(des);
+        //mRouteDetailDes.setVisibility(View.GONE);
+//        mBottomLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(mContext,
+//                        WalkRouteDetailActivity.class);
+//                intent.putExtra("walk_path", walkPath);
+//                intent.putExtra("walk_result",
+//                        mWalkRouteResult);
+//                startActivity(intent);
+//            }
+//        });
 
     }
 }

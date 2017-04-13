@@ -1,9 +1,10 @@
 package com.example.mapnavigation.utils;
 
-import android.view.View;
+
 import android.widget.TextView;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import com.example.mapnavigation.MapApplication;
+
 
 /**
  * 应用程序帮助类
@@ -11,6 +12,15 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
  */
 
 public class AppUtils {
+
+
+
+    /**
+     * 获取字符串数组资源
+     */
+    public static String[] getStringArray(int resId) {
+        return MapApplication.getInstance().getResources().getStringArray(resId);
+    }
 
     /**
      *根据传进来的文本框来获取输入的字符串
