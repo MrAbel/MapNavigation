@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.mapnavigation.R;
-import com.example.mapnavigation.adapter.TabPagerAdapter;
+import com.example.mapnavigation.adapter.NavPagerAdapt;
+import com.example.mapnavigation.adapter.NavPagerAdapter;
 import com.example.mapnavigation.ui.customview.TabPageIndicator;
+import com.example.mapnavigation.utils.Constants;
 
 /**
  * Created by zzg on 17-4-12.
@@ -26,7 +28,8 @@ public abstract class BasePagerFragment extends Fragment {
     // 标签页控制的ViewPager
     public ViewPager mViewPager;
     // 标签页控制的ViewPager的适配器
-    private TabPagerAdapter mTabPagerAdapter;
+    private NavPagerAdapter mNavPagerAdapter;
+    private NavPagerAdapt mNavPagerAdap;
     // 标签页的标签
     private View mView;
 
@@ -36,7 +39,7 @@ public abstract class BasePagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // 每一个标签页（子）的布局架构都一样
-        mView = View.inflate(getActivity(), R.layout.fragment_viewpager_indicator, null);
+        mView = View.inflate(getActivity(), R.layout.content_nav_panel, null);
         init();
         return mView;
         //return super.onCreateView(inflater, container, savedInstanceState);
@@ -49,16 +52,22 @@ public abstract class BasePagerFragment extends Fragment {
     private void init(){
         initeView();
         // 初始化ViewPager的适配器
-        mTabPagerAdapter = new TabPagerAdapter(getChildFragmentManager(), setTitles());
+        mNavPagerAdapter = new NavPagerAdapter(getFragmentManager(), setTitles());
+        //mNavPagerAdap = new NavPagerAdapt(getFragmentManager(), setTitles());
         // 为ViewPager设置适配器
-        mViewPager.setAdapter(mTabPagerAdapter);
-        mViewPager.setOffscreenPageLimit(10);
+        mViewPager.setAdapter(mNavPagerAdapter);
+        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setCurrentItem(Constants.Pager_Walk, false);
         // 将标签页和ViewPager关联
         mTabPagerIndicator.setViewPager(mViewPager);
         // 设置标签页的样式
         setIndicator();
     }
 
+    public void setAdapter(){
+        mViewPager.setAdapter(mNavPagerAdapter);
+        mTabPagerIndicator.setViewPager(mViewPager);
+    }
     /**
      * 初始化视图控件
      */
@@ -73,11 +82,9 @@ public abstract class BasePagerFragment extends Fragment {
     private void setIndicator() {
         mTabPagerIndicator.setIndicatorMode(TabPageIndicator.IndicatorMode.MODE_WEIGHT_NOEXPAND_SAME);
         mTabPagerIndicator.setDividerColor(Color.parseColor("#dcdcdc"));// 设置分割线的颜色
-        //mTabPagerIndicator.setDividerPadding(CommonUtils.dip2px(SYApplication.getContext(), 0));
         mTabPagerIndicator.setIndicatorColor(Color.parseColor("#44A43B"));// 设置底部横线的颜色
         mTabPagerIndicator.setTextColorSelected(Color.parseColor("#44A43B"));// 设置tab标题选中的颜色
         mTabPagerIndicator.setTextColor(Color.parseColor("#797979"));// 设置tab标题未被选中的颜色
-        //mTabPagerIndicator.setTextSize(CommonUtils.sp2px(SYApplication.getContext(), 14));// 设置字体大小
     }
 
     // -------------------抽象函数----------------------
@@ -88,4 +95,7 @@ public abstract class BasePagerFragment extends Fragment {
      */
     protected abstract String[] setTitles();// 设置标题
 
+    public int getTitlePos(){
+        return mTabPagerIndicator.getTitlePos();
+    }
 }

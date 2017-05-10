@@ -4,15 +4,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.example.mapnavigation.R;
-import com.example.mapnavigation.ui.TestFragment;
 import com.example.mapnavigation.ui.map.MapFragment;
 import com.example.mapnavigation.ui.nav.NavFragment;
-import com.example.mapnavigation.ui.nav.NavPanel;
-import com.example.mapnavigation.ui.nav.bus.BusPagerFragment;
-import com.example.mapnavigation.ui.nav.car.CarPagerFragment;
-import com.example.mapnavigation.ui.nav.foot.FootPagerFragment;
+import com.example.mapnavigation.ui.nav.panel.HistoryFragment;
+import com.example.mapnavigation.ui.nav.panel.bus.BusPagerFragment;
+import com.example.mapnavigation.ui.nav.panel.car.CarPagerFragment;
+import com.example.mapnavigation.ui.nav.panel.foot.WalkRouteFragment;
 import com.example.mapnavigation.ui.nearby.NearByFragment;
+
 
 
 /**
@@ -21,12 +20,12 @@ import com.example.mapnavigation.ui.nearby.NearByFragment;
 
 public class FragmentUtils {
     /**
-     * main
+     * 为主ViewPager创建Fragment
      *
      * @param position
      * @return
      */
-    public static Fragment createFragment(int position) {
+    public static Fragment createFragmentForMainVP(int position) {
 
         Fragment fragment = null;
         switch (position) {
@@ -48,22 +47,40 @@ public class FragmentUtils {
      * @param position
      * @return
      */
-    public static Fragment createTabFragment(int position){
+    public static Fragment createFragmentForNavPanel(int position){
 
         Fragment fragment = null;
         switch (position) {
-            case 0://　公交
+            case Constants.Pager_Walk:// 步行
+                fragment = WalkRouteFragment.newInstance();
+                break;
+            case Constants.Pager_Bus://　公交
                 fragment = BusPagerFragment.newInstance();
                 break;
-            case 1:// 步行
-                fragment = FootPagerFragment.newInstance();
-                break;
-            case 2:// 驾车
+            case Constants.Pager_Car:// 驾车
                 fragment = CarPagerFragment.newInstance();
                 break;
         }
         return fragment;
     }
+
+    public static Fragment create(int position){
+
+        Fragment fragment = null;
+        switch (position) {
+            case Constants.Pager_Walk:// 步行
+                fragment = HistoryFragment.newInstance();
+                break;
+            case Constants.Pager_Bus://　公交
+                fragment = HistoryFragment.newInstance();
+                break;
+            case Constants.Pager_Car:// 驾车
+                fragment = HistoryFragment.newInstance();
+                break;
+        }
+        return fragment;
+    }
+
 
     /**
      * 动态加载Fragment

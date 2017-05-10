@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.example.mapnavigation.R;
 import com.example.mapnavigation.base.BaseFragment;
-import com.example.mapnavigation.ui.nav.NavFragment;
 
 /**
  * Created by zzg on 17-4-12.

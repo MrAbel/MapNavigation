@@ -1,42 +1,44 @@
 package com.example.mapnavigation.controller;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.os.Bundle;
+import android.os.Message;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.UiSettings;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.Poi;
 import com.amap.api.maps.model.PolylineOptions;
-import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.district.DistrictItem;
+import com.amap.api.services.geocoder.GeocodeAddress;
+import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.RegeocodeAddress;
+import com.amap.api.services.poisearch.PoiResult;
+import com.amap.api.services.route.BusRouteResult;
+import com.amap.api.services.route.DriveRouteResult;
 import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
-import com.example.mapnavigation.MapApplication;
-import com.example.mapnavigation.R;
-import com.example.mapnavigation.ui.overlay.WalkRouteOverlay;
+import com.example.mapnavigation.overlay.PoiOverlay;
+import com.example.mapnavigation.overlay.WalkRouteOverlay;
+import com.example.mapnavigation.utils.AMapUtils;
 import com.example.mapnavigation.utils.ToastUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.mapnavigation.utils.Constants.AMAP_DISTRICT_ZOOM_VALUE;
 import static com.example.mapnavigation.utils.Constants.AMAP_INIT_ZOOM_VALUE;
 import static com.example.mapnavigation.utils.Constants.AMAP_REGEOCODE_RADIUS;
 
 /**
+ * 主要用来管理地图，用户的操作和图层的绘制管理
  * Created by zzg on 17-4-5.
  */
 
@@ -59,11 +61,13 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
     // 标识定位的图标(当前位置)
     //private Marker mLocationMarker;
 
+    // Poi覆盖层
+    private PoiOverlay mPoiOverlay;
+
     // ---------------构造函数-----------------------
     public AMapManager(Context context, AMap aMap){
         init(context, aMap);
         regiesterListener();
-
     }
 
     // --------------普通函数------------------------
@@ -139,6 +143,48 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
             return;
 
         //mAMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zoom));
+    }
+
+
+    /**
+     * 将查询结果添加到地图上的Poi层
+     * @param result
+     */
+    public void addPoiOverlay(PoiResult result){
+        if (result == null){
+            return;
+        }
+        addPoiOverlay(result.getPois());
+    }
+
+    /**
+     * 将查询结果中的item添加到Poi层
+     *
+     * @param pois
+     */
+    public void addPoiOverlay(List<PoiItem> pois) {
+        if (pois == null || pois.size() == 0){
+            return;
+        }
+
+        // 为地图创建Poi绘制层
+        mPoiOverlay = new PoiOverlay(mAMap, pois);
+        // 添加Marker到地图中
+        mPoiOverlay.addToMap();
+        // 移动镜头到当前的视角
+        mPoiOverlay.zoomToSpan();
+
+    }
+
+    /**
+     * 移除Poi地图上的层
+     */
+    public void removePoiOverlay() {
+        if (mPoiOverlay ==  null){
+            return;
+        }
+        mPoiOverlay.removeFromMap();
+        mPoiOverlay = null;
     }
 
     // ----------------AMap.OnPOIClickListener---------------------
@@ -220,6 +266,11 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
     }
 
     @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult) {
+
+    }
+
+    @Override
     public void onDistrictSearched(ArrayList<DistrictItem> districtItems) {
 
         if (districtItems == null){
@@ -282,36 +333,26 @@ public class AMapManager implements AMap.OnPOIClickListener, AMap.OnMapClickList
 
     @Override
     public void onWalkRouteSearched(WalkRouteResult walkRouteResult) {
-        if (walkRouteResult == null){
-            return;
-        }
 
-        final WalkPath walkPath = walkRouteResult.getPaths()
-                .get(0);
-        WalkRouteOverlay walkRouteOverlay = new WalkRouteOverlay(
-                mContext, mAMap, walkPath,
-                walkRouteResult.getStartPos(),
-                walkRouteResult.getTargetPos());
-        walkRouteOverlay.removeFromMap();
-        walkRouteOverlay.addToMap();
-        walkRouteOverlay.zoomToSpan();
-        //mBottomLayout.setVisibility(View.VISIBLE);
-        int dis = (int) walkPath.getDistance();
-        int dur = (int) walkPath.getDuration();
-        //String des = AMapUtil.getFriendlyTime(dur)+"("+AMapUtil.getFriendlyLength(dis)+")";
-        //mRotueTimeDes.setText(des);
-        //mRouteDetailDes.setVisibility(View.GONE);
-//        mBottomLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext,
-//                        WalkRouteDetailActivity.class);
-//                intent.putExtra("walk_path", walkPath);
-//                intent.putExtra("walk_result",
-//                        mWalkRouteResult);
-//                startActivity(intent);
-//            }
-//        });
 
     }
+
+    @Override
+    public void onDriveRouteSearched(DriveRouteResult driveRouteResult) {
+
+    }
+
+    @Override
+    public void onBusRouteSearched(BusRouteResult busRouteResult) {
+
+    }
+
+    // -----------------getter and setter-----------
+
+    public AMap getmAMap(){
+        return mAMap;
+    }
+
+
+
 }

@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/build/intermediates/res/merged/debug/anim/slide_in_from_bottom.xml",
+        "source": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/res/anim/slide_in_from_bottom.xml"
+    },
+    {
+        "merged": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/build/intermediates/res/merged/debug/anim/slide_in_from_top.xml",
+        "source": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/res/anim/slide_in_from_top.xml"
+    },
+    {
+        "merged": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/build/intermediates/res/merged/debug/anim/slide_out_to_bottom.xml",
+        "source": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/res/anim/slide_out_to_bottom.xml"
+    },
+    {
+        "merged": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/build/intermediates/res/merged/debug/anim/slide_out_to_top.xml",
+        "source": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/res/anim/slide_out_to_top.xml"
+    }
+]

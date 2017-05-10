@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/build/intermediates/res/merged/debug/drawable/indicator_bg_bottom.xml",
+        "source": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/res/drawable/indicator_bg_bottom.xml"
+    },
+    {
+        "merged": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/build/intermediates/res/merged/debug/drawable/indicator_bg_top.xml",
+        "source": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/res/drawable/indicator_bg_top.xml"
+    }
+]

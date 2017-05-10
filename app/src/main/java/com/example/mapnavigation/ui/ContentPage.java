@@ -41,6 +41,8 @@ public abstract class ContentPage extends FrameLayout {
     private View mErrorView;
     // 加载数据成功的View
     private View mLoadedView;
+    // 布局参数
+    private LayoutParams mParams;
 
     // ---------------构造函数-------------------
     public ContentPage(Context context) {
@@ -75,7 +77,7 @@ public abstract class ContentPage extends FrameLayout {
     private void loadPage(){
 
         // 加载View的参数
-        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
+        mParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         // 区分不同的ContenPage状态
         switch (mState.getValue()) {
@@ -84,12 +86,12 @@ public abstract class ContentPage extends FrameLayout {
                     mLoadingView = View.inflate(getContext(), R.layout.content_page_loading, null);
                 }
                 removeAllViews();
-                addView(mLoadingView, params);
+                addView(mLoadingView, mParams);
                 break;
             case 1://加载成功的状态
                 removeAllViews();
                 mLoadedView = loadView();
-                addView(mLoadedView, params);
+                addView(mLoadedView, mParams);
                 break;
             case 2://加载失败的状态
                 if (mErrorView == null) {
@@ -108,7 +110,7 @@ public abstract class ContentPage extends FrameLayout {
                     });
                 }
                 removeAllViews();
-                addView(mErrorView, params);
+                addView(mErrorView, mParams);
                 break;
         }
     }
@@ -159,6 +161,11 @@ public abstract class ContentPage extends FrameLayout {
             mState = PageState.STATE_LOADED;
         }
         loadPage();
+    }
+
+    public void loadNewView(View view){
+        removeAllViews();
+        addView(view, mParams);
     }
 
     // -----------------抽象函数----------------------

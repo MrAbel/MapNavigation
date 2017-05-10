@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="MapNavigation"></dbname>
+    <version value="1"></version>
+    <list>
+        <mapping class="com.example.mapnavigation.di.module.GeoPoint"></mapping>
+        <mapping class="com.example.mapnavigation.di.module.RouteHistory"></mapping>
+        <mapping class="com.example.mapnavigation.di.module.QueryHistory"></mapping>
+    </list>
+</litepal>
+

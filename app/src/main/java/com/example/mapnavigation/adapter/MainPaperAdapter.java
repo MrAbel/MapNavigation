@@ -8,7 +8,7 @@ import com.example.mapnavigation.utils.Constants;
 import com.example.mapnavigation.utils.FragmentUtils;
 
 /**
- * MyPagerAdapter
+ * MainPagerAdapter
  * 为ViewPager提供数据。
  * Created by zzg on 17-4-12.
  */
@@ -29,7 +29,7 @@ public class MainPaperAdapter extends FragmentStatePagerAdapter {
      */
     @Override
     public Fragment getItem(int position) {
-        return FragmentUtils.createFragment(position);
+        return FragmentUtils.createFragmentForMainVP(position);
     }
 
     /**
@@ -39,6 +39,6 @@ public class MainPaperAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
 
-        return Constants.Pager_ALL;
+        return Constants.Pager_Main_ALL;
     }
 }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.example.mapnavigation.ui.ContentPage;
 
 /**
+ *
  * Created by zzg on 17-4-12.
  */
 
@@ -23,9 +24,11 @@ public abstract class BaseFragment extends Fragment {
     protected Context mContext;
     // 该页面的实例状态
     protected Bundle mSavedInstanceState;
-    protected FragmentManager mFragmentManager;
+    //protected FragmentManager mFragmentManager;
     protected ContentPage mContentPage;
     protected ProgressDialog mProgressDialog;
+    protected boolean isVisible;
+
 
 
     // ------------------------碎片声明周期-------------------------
@@ -46,7 +49,7 @@ public abstract class BaseFragment extends Fragment {
         mProgressDialog.setCancelable(true);
 
         // 获得FragmentManager
-        mFragmentManager = (FragmentManager)getActivity().getSupportFragmentManager();
+        //mFragmentManager = (FragmentManager)getActivity().getSupportFragmentManager();
 
         if (mContentPage == null) {
             mContentPage = new ContentPage(mContext){
@@ -64,6 +67,7 @@ public abstract class BaseFragment extends Fragment {
         } else {
             //CommonUtils.removeSelfFromParent(contentPage);
         }
+
         return mContentPage;
     }
 
@@ -83,4 +87,5 @@ public abstract class BaseFragment extends Fragment {
      * @return
      */
     public abstract Object getData();
+
 }

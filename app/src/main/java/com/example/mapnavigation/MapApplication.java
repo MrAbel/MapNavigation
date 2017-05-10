@@ -4,8 +4,15 @@ import android.app.Application;
 import android.content.Context;
 
 
+import com.example.mapnavigation.controller.AMapManager;
+import com.example.mapnavigation.controller.LocationManager;
+import com.example.mapnavigation.controller.QueryerManager;
 import com.example.mapnavigation.data.db.LocationPoint;
 import com.example.mapnavigation.utils.ToastUtils;
+
+import org.litepal.LitePal;
+import org.litepal.tablemanager.Connector;
+
 
 /**
  * Created by zzg on 17-3-30.
@@ -13,25 +20,37 @@ import com.example.mapnavigation.utils.ToastUtils;
 
 public class MapApplication extends Application {
 
-    // 当前位置点信息
-    private LocationPoint mLocationPoint;
+    // 当前应用程序的上下文环境
+    private static Context mContext;
+    // 查询服务控制器，全局只有一个
+    private QueryerManager mQueryManager;
+    // 位置管理器
+    private LocationManager mLocationMananger;
+    // 地图管理器
+    private AMapManager mAMapManager;
 
     // 当前应用程序实例
     private static MapApplication mInstance;
 
     private ToastUtils mToastUtils;
 
-    // 当前应用程序的上下文环境
-    private static Context mContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        // 初始化全局上下文环境
+        mContext = getApplicationContext();
+        // 初始化LitePal
+        LitePal.initialize(this);
+        // 获取数据库实例
+        Connector.getDatabase();
+        // 获取查询服务管理器
+        mQueryManager = new QueryerManager(mContext);
+
 
         mInstance = this;
-        mContext = getApplicationContext();
 
-        mLocationPoint = new LocationPoint();
+
         mToastUtils = new ToastUtils(mContext);
 
     }
@@ -44,6 +63,10 @@ public class MapApplication extends Application {
         return mContext;
     }
 
+    public QueryerManager getmQueryManager(){
+        return mQueryManager;
+    }
+
     /**
      * 获取应用程序实例
      * @return
@@ -52,13 +75,26 @@ public class MapApplication extends Application {
         return mInstance;
     }
 
-    // ---------------------getter and setter--------------------------
-    public LocationPoint getmLocationPoint() {
-        return mLocationPoint;
+    public LocationManager getmLocationMananger() {
+        return mLocationMananger;
     }
 
-    public void setmLocationPoint(LocationPoint mLocationPoint) {
-        this.mLocationPoint = mLocationPoint;
+    public void setmLocationMananger(LocationManager mLocationMananger) {
+        this.mLocationMananger = mLocationMananger;
     }
-    // ---------------------getter and setter--------------------------
+
+    public void setmQueryManager(QueryerManager mQueryManager) {
+        this.mQueryManager = mQueryManager;
+    }
+
+    public AMapManager getmAMapManager() {
+        return mAMapManager;
+    }
+
+    public void setmAMapManager(AMapManager mAMapManager) {
+        this.mAMapManager = mAMapManager;
+    }
+
+
+// ---------------------getter and setter--------------------------
 }

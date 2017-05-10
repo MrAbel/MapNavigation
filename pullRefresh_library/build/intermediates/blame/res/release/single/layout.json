@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/build/intermediates/res/merged/release/layout/pull_to_refresh_header_vertical.xml",
+        "source": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/res/layout/pull_to_refresh_header_vertical.xml"
+    },
+    {
+        "merged": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/build/intermediates/res/merged/release/layout/pull_to_refresh_header_horizontal.xml",
+        "source": "/home/zzg/AndroidStudioProjects/MapNavigation/pullRefresh_library/res/layout/pull_to_refresh_header_horizontal.xml"
+    }
+]

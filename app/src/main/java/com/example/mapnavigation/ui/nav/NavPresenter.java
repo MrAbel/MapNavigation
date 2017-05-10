@@ -2,8 +2,6 @@ package com.example.mapnavigation.ui.nav;
 
 import android.support.annotation.NonNull;
 
-import com.example.mapnavigation.ui.map.MapContract;
-
 import static dagger.internal.Preconditions.checkNotNull;
 
 /**

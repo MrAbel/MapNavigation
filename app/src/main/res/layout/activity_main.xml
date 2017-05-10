@@ -6,7 +6,7 @@
 
     <!--Toolbar-->
     <include
-        android:id="@+id/toolbar"
+        android:id="@+id/title_bar"
         layout="@layout/toolbar" />
 
     <!--DrawerLayout-->
@@ -20,34 +20,33 @@
             android:orientation="vertical"
             android:layout_height="match_parent">
             <!--ViewPager-->
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewpager"
+            <com.example.mapnavigation.ui.customview.NoScrollViewPager
+                android:id="@+id/main_viewpager"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
-
+                android:layout_weight="1"/>
             <RadioGroup
                 android:gravity="center_vertical"
-                android:id="@+id/radio_group"
+                android:id="@+id/main_radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/bottom_nearby"
+                    android:id="@+id/main_nearby"
                     style="@style/radioButton"
                     android:drawableTop="@drawable/selector_bottom_home"
                     android:text="附近" />
 
                 <RadioButton
-                    android:id="@+id/bottom_map"
+                    android:id="@+id/main_map"
                     style="@style/radioButton"
                     android:drawableTop="@drawable/selector_bottom_park"
                     android:text="地图" />
 
                 <RadioButton
-                    android:id="@+id/bottom_nav"
+                    android:id="@+id/main_nav"
                     style="@style/radioButton"
                     android:drawableTop="@drawable/selector_bottom_me"
                     android:text="导航" />

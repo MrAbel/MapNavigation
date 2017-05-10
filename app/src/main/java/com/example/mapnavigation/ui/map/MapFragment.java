@@ -1,15 +1,12 @@
 package com.example.mapnavigation.ui.map;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,21 +19,24 @@ import com.amap.api.services.core.AMapException;
 import com.amap.api.services.help.Inputtips;
 import com.amap.api.services.help.InputtipsQuery;
 import com.amap.api.services.help.Tip;
+import com.amap.api.services.poisearch.PoiResult;
 import com.example.mapnavigation.MapApplication;
 import com.example.mapnavigation.R;
 import com.example.mapnavigation.base.BaseFragment;
 import com.example.mapnavigation.controller.AMapManager;
 import com.example.mapnavigation.controller.LocationManager;
+import com.example.mapnavigation.controller.QueryerManager;
 import com.example.mapnavigation.ui.ContentPage;
 import com.example.mapnavigation.ui.customview.SearchBar;
-import com.example.mapnavigation.ui.nav.NavFragment;
-import com.example.mapnavigation.utils.ActivityUtils;
 import com.example.mapnavigation.utils.AppUtils;
 import com.example.mapnavigation.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import static com.example.mapnavigation.utils.Constants.EVENT_SEARCH_POI;
 import static dagger.internal.Preconditions.checkNotNull;
 
 /**
@@ -44,7 +44,7 @@ import static dagger.internal.Preconditions.checkNotNull;
  */
 
 public class MapFragment extends BaseFragment implements  MapContract.View, View.OnClickListener,
-        View.OnKeyListener, TextWatcher{
+        View.OnKeyListener, TextWatcher, QueryerManager.OnAPoiSearchListener{
 
     private static final String ARGUMENT_TASK_ID = "TASK_ID";
 
@@ -71,6 +71,13 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
     public ImageView mLocateBtn;
     // 导航按钮
     public Button mNavBtn;
+
+    private QueryerManager mQueryerManager;
+    /* Poi结果 . */
+    private PoiResult mCurrentPoiResult;
+
+    private Handler mHandler;
+
 
 
     // -------------BaseFragment-----------------
@@ -117,8 +124,30 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
         mAMap = mMapView.getMap();
         // 获取定位管理类
         mLocationManager = new LocationManager(mAMap);
+        MapApplication.getInstance().setmLocationMananger(mLocationManager);
         // 获取地图管理类
         mAMapManager = new AMapManager(mContext, mAMap);
+        MapApplication.getInstance().setmAMapManager(mAMapManager);
+        // 获取全局查询服务管理器
+        mQueryerManager = MapApplication.getInstance().getmQueryManager();
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case EVENT_SEARCH_POI:
+                        // 清空地图覆盖层
+                        MapApplication.getInstance().getmAMapManager().removePoiOverlay();
+                        //mActivity.get().mMapController.removeOverlay();
+                        // 搜索Poi结果处理
+                        MapApplication.getInstance().getmAMapManager().addPoiOverlay(mCurrentPoiResult);
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        };
     }
 
     /**
@@ -128,7 +157,6 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
         mMapView = (MapView) mView.findViewById(R.id.mapView);
         mSearchBar = (SearchBar)mView.findViewById(R.id.searchbar);
         mLocateBtn = (ImageView)mView.findViewById(R.id.imageView_locate_btn);
-        //    mNavBtn = (Button)mView.findViewById(R.id.button_navigate);
         regiesterListener();
     }
 
@@ -138,9 +166,9 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
     public void regiesterListener(){
         mLocateBtn.setOnClickListener(this);
         mSearchBar.setOnKeyListener(this);
-        //mNavBtn.setOnClickListener(this);
         mSearchBar.addTextChangedListener(this);
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -158,21 +186,6 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
                 //mLocationManager.locate();
                 //showCurLocation();
                 break;
-//            case R.id.button_navigate:
-//                ToastUtils.showShort("click nav");
-//                // 获得Fragment
-////                NavFragment navFragment = (NavFragment) getActivity().getSupportFragmentManager()
-////                        .findFragmentById(R.id.fragment_content);
-//
-////                // 如果获得Fragment不为空就将其添加到Activity中
-////                if (navFragment == null) {
-////                    navFragment = navFragment.newInstance();
-////
-////                    ActivityUtils.addFragmentToActivity(getActivity().getSupportFragmentManager(),
-////                            navFragment, R.id.fragment_content);
-//               // }
-//
-//                break;
             default:
                 break;
         }
@@ -205,7 +218,11 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
             }
 
             ToastUtils.showShort(keyword);
-            mAMapManager.searchDistrict(keyword);
+            //mAMapManager.searchDistrict(keyword);.
+            mQueryerManager.setmAPoiSearchListener(this);
+            //mQueryerManager.searchPoi(keyword);
+            mQueryerManager.searchNearbyKeyword(mLocationManager.getmAMapLocation(), keyword, keyword, 1000);
+            //mQueryerManager.searchNearbyKeyword(mLocationClient);
 
             return true;
         }
@@ -295,6 +312,25 @@ public class MapFragment extends BaseFragment implements  MapContract.View, View
 
     }
 
+    @Override
+    public void onPoiSearched(final PoiResult result) {
+        //final PoiResult fresult = result;
+        // 延迟500ms再隐藏进度对话框
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //mProgressDialog.dismiss();
+
+                if (result == null){
+                    return;
+                }
+
+                mCurrentPoiResult = result;
+                // 处理Poi搜索
+                mHandler.sendEmptyMessage(EVENT_SEARCH_POI);
+            }
+        }, 500);
+    }
 
 
 }

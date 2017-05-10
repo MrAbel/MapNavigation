@@ -1,31 +1,17 @@
 package com.example.mapnavigation.controller;
-
-import android.content.Context;
+;
 import android.graphics.Color;
 import android.util.Log;
-
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.LocationSource;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.Circle;
-import com.amap.api.maps.model.CircleOptions;
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.example.mapnavigation.MapApplication;
-import com.example.mapnavigation.R;
 import com.example.mapnavigation.data.db.LocationPoint;
-import com.example.mapnavigation.utils.ToastUtils;
-
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-
-import static android.R.id.progress;
 
 /**
  * LocationManager
@@ -44,13 +30,16 @@ public class LocationManager implements  AMapLocationListener{
     public AMapLocationClientOption mLocationOption = null;
 
     private LocationSource.OnLocationChangedListener mListener;
-    // 当前位置的维度
-    private double mLatitude;
-    // 当前位置的经度
-    private double mLongitude;
+
     private AMap mAMap;
     // 当前位置信息
-    private LocationPoint mLocationPoint;
+    private LocationPoint mCurPosInfo = new LocationPoint();
+
+    public AMapLocation getmAMapLocation() {
+        return mAMapLocation;
+    }
+
+    private AMapLocation mAMapLocation;
 
     private LatLng mLatLng;
 
@@ -77,7 +66,7 @@ public class LocationManager implements  AMapLocationListener{
         mLocationOption.setMockEnable(false);
         // 设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);
-        // 设置发起定位的时间间隔
+        // 设置发起定位的时间间隔,每10秒定位一次
         mLocationOption.setInterval(10000);
 
         //　获取最近3s内精度最高的一次定位结果：
@@ -138,14 +127,14 @@ public class LocationManager implements  AMapLocationListener{
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
 
-        ToastUtils.showShort("定位");
+        mAMapLocation = aMapLocation;
         if (aMapLocation != null) {
             if (aMapLocation.getErrorCode() == 0) {
 
                 mLatLng = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
 
                 // 将获取的信息存为当前位置
-                LocationPoint.AMapLocationToLocationInfo(aMapLocation, mLocationPoint);
+                LocationPoint.AMapLocationToLocationInfo(aMapLocation, mCurPosInfo);
 
                 //定位成功回调信息，设置相关消息
 
@@ -158,15 +147,17 @@ public class LocationManager implements  AMapLocationListener{
             }
         }
 
-
-
-        //获取定位时间
-//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        Date date = new Date(aMapLocation.getTime());
-//        df.format(date);
     }
 
     public LatLng getmLatLng(){
         return mLatLng;
+    }
+
+    /**
+     * 获取当前位置信息
+     * @return
+     */
+    public LocationPoint getmCurPosInfo() {
+        return mCurPosInfo;
     }
 }

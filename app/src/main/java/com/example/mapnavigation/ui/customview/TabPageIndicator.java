@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.mapnavigation.R;
+import com.example.mapnavigation.utils.ToastUtils;
 
 import java.util.Locale;
 
@@ -88,6 +89,7 @@ public class TabPageIndicator extends HorizontalScrollView {
 //    = R.drawable.background_tab;//字体颜色的选择器
 
     private Locale locale;
+    private int titlePos = 0;
 
     /**
      * 定义6种模式
@@ -289,6 +291,7 @@ public class TabPageIndicator extends HorizontalScrollView {
             @Override
             public void onClick(View v) {
                 pager.setCurrentItem(position);
+                titlePos = position;
             }
         });
         if (isExpand && !isExpandSameLine) {
@@ -653,6 +656,10 @@ public class TabPageIndicator extends HorizontalScrollView {
 
     public void setIndicatorPaddingRight(int indicatorPaddingRight) {
         this.indicatorPaddingRight = indicatorPaddingRight;
+    }
+
+    public int getTitlePos(){
+        return titlePos;
     }
 
     @Override
